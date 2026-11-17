@@ -1,30 +1,25 @@
-/* =====================================================================
-   FILE: src/app/app.routes.ts
-   WHAT: The map between URLs and pages.
-   WHY:  A single-page app never reloads. The router swaps the page
-         inside <router-outlet> (see app.html) when the URL changes.
-   ===================================================================== */
 import { Routes } from '@angular/router';
-
-import { StudentsPage } from './pages/students-page/students-page';
-import { PlaceholderPage } from './pages/placeholder-page/placeholder-page';
+import { authGuard } from './guards/auth.guard';
+import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
+import { HomePage } from './pages/home-page/home-page';
+import { DirectoryPage } from './pages/directory-page/directory-page';
+import { StaffPage } from './pages/staff-page/staff-page';
+import { StudentDetailPage } from './pages/student-detail-page/student-detail-page';
+import { GalleryPage } from './pages/gallery-page/gallery-page';
+import { SavedPage } from './pages/saved-page/saved-page';
+import { LoginPage } from './pages/login-page/login-page';
+import { ProfilePage } from './pages/profile-page/profile-page';
+import { NotFoundPage } from './pages/not-found-page/not-found-page';
 
 export const routes: Routes = [
-  // STEP 1: The landing page. An empty path '' means "the home URL".
-  { path: '', component: StudentsPage, title: 'Class of 2028 · GIU Yearbook' },
-
-  // STEP 2: Pages we have NOT designed/built yet use one placeholder page.
-  // `data` lets us pass a small piece of information (the title) to it.
-  // TIP: When you build the real page, replace `PlaceholderPage` with it.
-  { path: 'teachers', component: PlaceholderPage, data: { title: 'Teachers & Staff' } },
-  { path: 'gallery', component: PlaceholderPage, data: { title: 'Gallery' } },
-  { path: 'login', component: PlaceholderPage, data: { title: 'Student login' } },
-
-  // STEP 3: `:id` is a route PARAMETER. /students/3 and /students/7 both
-  // match this route. The page can read the number later.
-  { path: 'students/:id', component: PlaceholderPage, data: { title: 'Student story' } },
-
-  // STEP 4: Wildcard. Any unknown URL goes back to the home page.
-  // COMMON MISTAKE: this MUST be last. Routes are matched top to bottom.
-  { path: '**', redirectTo: '' },
+  { path: '', component: HomePage, title: 'GIU Yearbook · Class of 2028' },
+  { path: 'students', component: DirectoryPage, title: 'Students · GIU Yearbook' },
+  { path: 'students/:id', component: StudentDetailPage, title: 'Student · GIU Yearbook' },
+  { path: 'staff', component: StaffPage, title: 'Teachers & Staff · GIU Yearbook' },
+  { path: 'gallery', component: GalleryPage, title: 'Gallery · GIU Yearbook' },
+  { path: 'saved', component: SavedPage, title: 'Saved stories · GIU Yearbook' },
+  { path: 'login', component: LoginPage, title: 'Student login · GIU Yearbook' },
+  { path: 'profile', component: ProfilePage, canActivate: [authGuard],
+    canDeactivate: [unsavedChangesGuard], title: 'My profile · GIU Yearbook' },
+  { path: '**', component: NotFoundPage, title: 'Page not found · GIU Yearbook' },
 ];

@@ -1,32 +1,42 @@
-/* =====================================================================
-   FILE: components/header/header.ts
-   WHAT: The top bar of the site.
-   FIGMA: Select the header in "Class of 2028 · Student directory".
-          Notice 3 parts: logo + title, 3 navigation links, login button.
-   ===================================================================== */
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { SavedService } from '../../services/saved.service';
 
 @Component({
   selector: 'app-header',
-  // STEP 1: RouterLink makes links navigate WITHOUT reloading the page.
-  // RouterLinkActive adds a CSS class to the link of the current page.
   imports: [RouterLink, RouterLinkActive],
-  templateUrl: './header.html',
-  styleUrl: './header.css',
+  template: `
+    <header class="site-header">
+      <div class="header-inner">
+        <a routerLink="/" class="brand" aria-label="GIU Yearbook home">
+          <span class="brand__mark"><strong>GI</strong><span>U</span></span>
+          <span class="brand__copy">GERMAN<br>INTERNATIONAL<br>UNIVERSITY</span>
+          <span class="brand__separator"></span>
+          <span class="brand__yearbook">THE YEARBOOK<br><small>Class of 2028</small></span>
+        </a>
+        <button type="button" class="mobile-toggle" (click)="mobileOpen.set(!mobileOpen())"
+          [attr.aria-expanded]="mobileOpen()" aria-controls="main-nav">☰ <span>Menu</span></button>
+        <nav id="main-nav" class="main-nav" [class.main-nav--open]="mobileOpen()" aria-label="Main navigation">
+          <a routerLink="/" routerLinkActive="nav-active" [routerLinkActiveOptions]="{ exact: true }" (click)="mobileOpen.set(false)">Home</a>
+          <a routerLink="/students" routerLinkActive="nav-active" (click)="mobileOpen.set(false)">Class of 2028</a>
+          <a routerLink="/staff" routerLinkActive="nav-active" (click)="mobileOpen.set(false)">Teachers &amp; Staff</a>
+          <a routerLink="/gallery" routerLinkActive="nav-active" (click)="mobileOpen.set(false)">Gallery</a>
+          <a routerLink="/saved" routerLinkActive="nav-active" (click)="mobileOpen.set(false)">Saved <span class="nav-count">{{ saved.count() }}</span></a>
+          @if (auth.currentUser()) {
+            <a class="btn header__login" routerLink="/profile" (click)="mobileOpen.set(false)">My Profile
+              <img src="icons/user-round.svg" alt="" aria-hidden="true"></a>
+          } @else {
+            <a class="btn header__login" routerLink="/login" (click)="mobileOpen.set(false)">Student login
+              <img src="icons/arrow-up-right.svg" alt="" aria-hidden="true"></a>
+          }
+        </nav>
+      </div>
+    </header>
+  `,
 })
 export class Header {
-  // STEP 2: Navigation data as an array. WHY: the template loops over it
-  // with @for, so adding a link means adding one line here, not HTML.
-  // `exact: true` means "active only on exactly '/'". Without it the home
-  // link would look active on EVERY page, because every URL starts with '/'.
-  protected readonly navLinks = [
-    { label: 'Class of 2028', path: '/', exact: true },
-    { label: 'Teachers & Staff', path: '/teachers', exact: false },
-    { label: 'Gallery', path: '/gallery', exact: false },
-  ];
-
-  // STEP 3: A signal holds a value that, when it changes, updates the
-  // screen automatically. Here: did the logo image fail to load?
-  protected readonly logoFailed = signal(false);
+  protected readonly auth = inject(AuthService);
+  protected readonly saved = inject(SavedService);
+  protected readonly mobileOpen = signal(false);
 }
