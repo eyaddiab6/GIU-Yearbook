@@ -1,24 +1,41 @@
-import { TestBed } from '@angular/core/testing';
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { App } from './app';
+import { AuthService } from './services/auth.service';
 
 describe('App', () => {
+  let fixture: ComponentFixture<App>;
+
+  const authMock = {
+    currentUser: () => null,
+    checkSession: vi.fn(() => of(null)),
+  };
+
   beforeEach(async () => {
+    authMock.checkSession.mockClear();
+
     await TestBed.configureTestingModule({
       imports: [App],
-    })
-      .compileComponents();
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: authMock },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
+  it('should render the application shell', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, GIU-Yearbook');
+    expect(compiled.querySelector('router-outlet')).not.toBeNull();
   });
 });

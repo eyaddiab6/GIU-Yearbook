@@ -1,123 +1,167 @@
-/* =====================================================================
-   FILE: src/styles.css  (GLOBAL STYLES)
-   WHY:  Styles written here apply to the WHOLE app. We keep only things
-         that every component shares: design tokens, a CSS reset, base
-         typography and the button style.
-         Anything specific to one component lives in that component's
-         own .css file instead.
-   ===================================================================== */
-
-/* ---------------------------------------------------------------------
-   STEP 1: Design tokens.
-   Open the "Brand & color" and "Navigation & responsive rhythm" sections
-   of the UI kit in Figma. Every value below was copied from there.
-   WHY: CSS variables give each value ONE name. If the university changes
-        the red tomorrow, you edit one line, not fifty.
-   --------------------------------------------------------------------- */
+/* Shared GIU Yearbook design tokens and layout (Lab 1 -> Lab 7) */
 :root {
-  /* Colors (UI kit > Brand & color) */
-  --color-ink: #202020;          /* primary text */
-  --color-red: #B52430;          /* actions & active states */
-  --color-red-hover: #8E1D27;    /* approximate: check the kit's "Hover" swatch */
-  --color-gold: #D39424;         /* highlights */
-  --color-white: #FFFFFF;        /* surfaces / cards */
-  --color-canvas: #F5F5F3;       /* page background */
-  --color-muted: #73736F;        /* secondary text */
-  --color-border: #DDDDD8;       /* dividers & card borders */
-  --color-gold-tint: #F5ECD8;    /* tags */
-
-  /* Fonts (UI kit > Typography) */
-  --font-serif: 'Lora', Georgia, serif;
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-
-  /* Spacing scale (UI kit > Spacing & geometry): 4 8 12 16 20 24 32 48 64 */
-  --space-1: 4px;
+  --color-red: #ae1934;
+  --color-red-hover: #941329;
+  --color-gold: #d5b76e;
+  --color-gold-tint: #f4eedc;
+  --color-ink: #20201d;
+  --color-muted: #71716b;
+  --color-border: #e0dfd8;
+  --color-canvas: #f7f7f2;
+  --color-white: #fff;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --radius-card: 8px;
+  --radius-control: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
   --space-5: 20px;
   --space-6: 24px;
   --space-7: 32px;
-  --space-8: 48px;
-  --space-9: 64px;
-
-  /* Shape */
-  --radius-control: 4px;   /* buttons & inputs */
-  --radius-card: 8px;      /* cards */
-
-  /* Page side margin: 64px on desktop, 20px on mobile (see media query) */
-  --page-margin: 64px;
+  --space-8: 40px;
+  --space-9: 56px;
 }
-
-/* STEP 2: On small screens the kit uses 20px side margins. */
-@media (max-width: 720px) {
-  :root { --page-margin: 20px; }
-}
-
-/* ---------------------------------------------------------------------
-   STEP 3: A tiny CSS reset.
-   WHY: Browsers add their own default margins and sizing. Resetting them
-        makes the page match the Figma design more predictably.
-   TIP: `box-sizing: border-box` means padding and border are INCLUDED in
-        an element's width. Figma measures boxes the same way.
-   --------------------------------------------------------------------- */
-*, *::before, *::after { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  background: var(--color-canvas);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  font-size: 15px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, p { margin: 0; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--color-ink); background: var(--color-canvas); font: 400 14px/1.5 var(--font-sans); }
+h1,h2,h3,p,figure,blockquote { margin: 0; }
 a { color: inherit; text-decoration: none; }
+a:hover { color: var(--color-red); }
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
 img { display: block; max-width: 100%; }
-
-/* ---------------------------------------------------------------------
-   STEP 4: Keyboard focus ring.
-   WHY: People who navigate with the Tab key need to SEE which element is
-        focused. The UI kit shows a 2px red outline for focus.
-   COMMON MISTAKE: writing `outline: none` without a replacement makes the
-        site unusable for keyboard users.
-   --------------------------------------------------------------------- */
-:focus-visible {
-  outline: 2px solid var(--color-red);
-  outline-offset: 3px;
+button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--color-red); outline-offset: 3px; }
+.page-shell { width: min(1350px, calc(100% - 80px)); min-height: calc(100vh - 194px); margin: 0 auto 92px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.overline { color: var(--color-red); font-size: 11px; letter-spacing: .06em; font-weight: 700; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 44px; padding: 0 19px; border: 1px solid var(--color-border); border-radius: var(--radius-control); background: var(--color-white); color: var(--color-ink); font-size: 12px; font-weight: 600; white-space: nowrap; transition: background .15s, color .15s, border-color .15s; }
+.btn:hover { border-color: var(--color-ink); color: var(--color-ink); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn img { width: 16px; height: 16px; }
+.btn-red { color: #fff; background: var(--color-red); border-color: var(--color-red); }
+.btn-red:hover { background: var(--color-red-hover); border-color: var(--color-red-hover); color: #fff; }
+/* Header */
+.site-header { position: relative; z-index: 10; border-top: 5px solid var(--color-red); background: var(--color-white); border-bottom: 1px solid var(--color-border); }
+.header-inner { max-width: 1350px; min-height: 85px; padding: 0 40px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.brand:hover { color: inherit; }
+.brand__mark { font-size: 40px; font-family: Georgia, serif; letter-spacing: -5px; line-height: 1; padding-right: 5px; }
+.brand__mark strong { color: var(--color-ink); font-weight: 800; }
+.brand__mark span { color: var(--color-red); font-weight: 800; }
+.brand__copy { border-left: 2px solid var(--color-gold); padding-left: 10px; font-size: 7px; font-weight: 800; letter-spacing: .035em; line-height: 1.25; }
+.brand__separator { height: 30px; width: 1px; background: var(--color-border); margin: 0 5px; }
+.brand__yearbook { font-size: 9px; letter-spacing: .045em; line-height: 1.4; font-weight: 700; }
+.brand__yearbook small { font-size: 9px; font-weight: 400; color: var(--color-muted); }
+.main-nav { display: flex; align-items: center; gap: 24px; }
+.main-nav > a:not(.btn) { font-size: 11px; color: #72726c; white-space: nowrap; }
+.main-nav > a:hover, .main-nav > a.nav-active { color: var(--color-red); }
+.nav-count { margin-left: 2px; color: var(--color-red); font-weight: 700; }
+.header__login { min-height: 36px; padding: 0 13px; color: #fff; background: var(--color-red); border-color: var(--color-red); font-size: 11px; }
+.header__login:hover { background: var(--color-red-hover); color: #fff; border-color: var(--color-red-hover); }
+.header__login img { width: 14px; height: 14px; filter: brightness(0) invert(1); }
+.mobile-toggle { display: none; background: none; border: 1px solid var(--color-border); padding: 8px 12px; border-radius: 4px; }
+/* Footer */
+.site-footer { border-top: 1px solid var(--color-border); background: #f0f0ea; }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; max-width: 1350px; padding: 24px 40px; margin: auto; gap: 20px; color: #888881; font-size: 11px; }
+.footer-inner strong { display: block; font-size: 10px; color: #55554e; }
+.footer-inner p { margin-top: 6px; }
+.footer-inner a:hover { text-decoration: underline; }
+/* Home page */
+.hero { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 6%; align-items: center; padding: 70px 0 40px; }
+.hero__copy h1 { max-width: 620px; margin: 20px 0; font: 400 clamp(42px, 4.6vw, 69px)/1.12 var(--font-serif); letter-spacing: -.035em; }
+.hero__copy h1 em { font-style: italic; color: var(--color-red); }
+.hero__copy > p:not(.overline):not(.hero__eyebrow) { max-width: 515px; font-size: 15px; line-height: 1.8; color: var(--color-muted); }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+.hero__eyebrow { margin-top: 64px; font-size: 10px; letter-spacing: .05em; color: #909087; }
+.hero__image { position: relative; aspect-ratio: 1.05; overflow: hidden; border-radius: 8px; }
+.hero__image > img { width: 100%; height: 100%; object-fit: cover; }
+.hero__image::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 55%, #101c1599); pointer-events: none; }
+.hero__image > span { position: absolute; z-index: 1; bottom: 26px; left: 30px; color: white; font: 400 56px/.9 var(--font-serif); }
+.hero__image small { display: block; font: 600 10px/2 var(--font-sans); letter-spacing: .16em; }
+.section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin: 90px 0 30px; }
+.section-heading h2 { margin-top: 12px; font: 400 43px/1.2 var(--font-serif); }
+.section-heading p:last-child { margin-top: 12px; color: var(--color-muted); }
+.text-link { color: var(--color-red); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.section-title { padding: 58px 0 30px; }
+.section-title h1 { margin: 13px 0; font: 400 clamp(42px,5vw,62px)/1.16 var(--font-serif); }
+.section-title > p:last-child { color: var(--color-muted); font-size: 15px; }
+/* People cards */
+.student-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 25px; }
+.person-card { overflow: hidden; background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-card); }
+.person-card__image { display: block; aspect-ratio: 1 / 1.05; overflow: hidden; background: #e7e5dd; }
+.person-card__image > img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s; }
+a.person-card__image:hover img { transform: scale(1.04); }
+.person-card__body { padding: 20px; }
+.person-card__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.person-card__name { font-size: 18px; font-weight: 650; }
+.person-card__meta { margin-top: 5px; color: var(--color-muted); font-size: 11px; }
+.person-card__quote { margin-top: 18px; min-height: 55px; font: italic 16px/1.4 var(--font-serif); }
+.person-card__bio { margin-top: 13px; color: var(--color-muted); font-size: 12px; line-height: 1.6; }
+.save-icon { padding: 0; border: none; background: none; font-size: 26px; color: #b6b6b0; }
+.save-icon--active { color: var(--color-red); }
+.feature-banner { display: flex; align-items: center; justify-content: space-between; gap: 30px; margin-top: 90px; padding: 45px 56px; border-radius: 8px; background: #efe9db; }
+.feature-banner h2 { margin: 8px 0; font: 400 39px var(--font-serif); }
+.feature-banner p:not(.overline) { color: var(--color-muted); }
+/* Directory filters */
+.filters { display: flex; align-items: center; gap: 15px; margin: 0 0 30px; }
+.search-field { display: flex; align-items: center; gap: 12px; flex: 1; max-width: 470px; height: 44px; padding: 0 15px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-white); }
+.search-field img { width: 15px; }
+.search-field input { width: 100%; border: none; outline: none; background: transparent; font-size: 12px; }
+.filters select { height: 44px; padding: 0 12px; border: 1px solid var(--color-border); border-radius: 4px; background: white; font-size: 12px; }
+.filter-count { margin-left: auto; font-size: 12px; color: var(--color-muted); }
+.empty-state { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 18px; min-height: 260px; padding: 48px; background: var(--color-white); border: 1px solid var(--color-border); border-radius: 8px; color: var(--color-muted); grid-column: 1 / -1; }
+.empty-state h1,.empty-state h2 { color: var(--color-ink); font: 400 38px var(--font-serif); }
+/* Student detail page */
+.back-link { padding-top: 42px; font-size: 12px; color: var(--color-red); }
+.detail-layout { display: grid; grid-template-columns: minmax(0, .65fr) 1fr; align-items: center; gap: 9%; margin-top: 25px; }
+.detail-photo { width: 100%; max-height: 700px; aspect-ratio: 4/5; object-fit: cover; border-radius: 8px; }
+.detail-info h1 { margin: 16px 0 6px; font: 400 clamp(44px, 5vw, 68px) var(--font-serif); }
+.detail-meta { font-size: 13px; color: var(--color-muted); }
+.detail-info blockquote { margin: 50px 0 38px; font: italic 34px/1.45 var(--font-serif); }
+.detail-note { margin-top: 30px; max-width: 360px; font-size: 12px; color: var(--color-muted); }
+.inline-link { border: 0; padding: 0; background: transparent; color: var(--color-red); text-decoration: underline; font-size: 12px; }
+/* Gallery */
+.gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+.gallery-grid figure { overflow: hidden; border-radius: 8px; background: white; border: 1px solid var(--color-border); }
+.gallery-grid__wide { grid-column: 1 / -1; }
+.gallery-grid img { width: 100%; max-height: 420px; object-fit: cover; }
+.gallery-grid__wide img { max-height: 470px; }
+.gallery-grid figcaption { padding: 15px 18px; font: italic 18px var(--font-serif); }
+@media (max-width: 1180px) {
+  .header-inner { gap: 15px; }
+  .main-nav { gap: 13px; }
+  .brand__yearbook,.brand__separator { display: none; }
+  .student-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .hero__eyebrow { margin-top: 35px; }
 }
-
-/* ---------------------------------------------------------------------
-   STEP 5: Shared button style (UI kit > Actions & form elements).
-   44px tall, 4px corners. `.btn--outline` is the white button with a
-   border, like "Student login" and "Back to top".
-   TIP: BEM naming  block__element--modifier  keeps class names readable.
-   --------------------------------------------------------------------- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  height: 44px;
-  padding: 0 18px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-control);
-  background: var(--color-white);
-  color: var(--color-ink);
-  font: 600 13px/1 var(--font-sans);
-  cursor: pointer;
+@media (max-width: 850px) {
+  .page-shell { width: calc(100% - 44px); margin-bottom: 60px; }
+  .header-inner { padding: 16px 22px; min-height: 72px; }
+  .mobile-toggle { display: flex; gap: 8px; align-items: center; }
+  .main-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 2px; padding: 16px 22px 22px; background: #fff; border-bottom: 1px solid var(--color-border); box-shadow: 0 9px 13px #00000010; }
+  .main-nav--open { display: flex; }
+  .main-nav > a:not(.btn) { font-size: 13px; padding: 11px 0; }
+  .hero { grid-template-columns: 1fr; padding-top: 45px; gap: 35px; }
+  .hero__eyebrow { display: none; }
+  .student-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 15px; }
+  .section-heading { margin-top: 56px; }
+  .detail-layout { grid-template-columns: 1fr; gap: 24px; }
+  .detail-photo { max-height: 600px; }
+  .detail-info blockquote { margin: 24px 0; }
 }
-.btn:hover { border-color: var(--color-ink); }
-.btn svg,
-.btn img { width: 18px; height: 18px; flex: none; }
-
-/* Helper used to hide text visually but keep it for screen readers. */
-.visually-hidden {
-  position: absolute;
-  width: 1px; height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+@media (max-width: 580px) {
+  .brand__mark { font-size: 34px; }
+  .brand__copy { font-size: 6px; }
+  .page-shell { width: calc(100% - 30px); }
+  .student-grid { grid-template-columns: 1fr; }
+  .section-heading { align-items: start; flex-direction: column; }
+  .section-heading h2 { font-size: 36px; }
+  .feature-banner { padding: 28px 24px; align-items: flex-start; flex-direction: column; }
+  .filters { flex-wrap: wrap; }
+  .search-field { flex-basis: 100%; max-width: unset; }
+  .filter-count { margin-left: 0; }
+  .gallery-grid { grid-template-columns: 1fr; }
+  .gallery-grid__wide { grid-column: auto; }
+  .footer-inner { padding: 24px 16px; align-items: flex-start; flex-direction: column; }
 }
